@@ -66,7 +66,27 @@ def get_empresa(empresa_id):
     empresa = Empresa.query.filter_by(id=empresa_id).first()
     return jsonify(empresa.serialize()), 200
 
+@app.route('/empresa', methods=['POST'])
+def create_empresa():
+    # leer los datos que me envia la solicitud(body)
+    data = request.json 
+    print(data)
+    if not 'ciudad' in data:
+        return jsonify('ldebes enviar la ciduad'), 400
+    if data['ciudad'] == "":
+         return jsonify('la ciudad no debe ser vacia'), 400
+    print(data.get('ciudad'))
+    print(data['ciudad'])
+    # crear una empresa nueva
+    company = Empresa(**data)
+    db.session.add(company)
+    db.session.commit()
 
+    response_body = {
+        "msg": "debo crear empresa"
+    }
+
+    return jsonify(response_body), 200
 
 # FIN DE CODIGO
 

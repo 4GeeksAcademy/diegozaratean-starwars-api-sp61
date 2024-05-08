@@ -25,6 +25,7 @@ class Empresa(db.Model):
     nombre = db.Column(db.String(250), nullable=False)
     ciudad = db.Column(db.String(250), nullable=False)
     slogan = db.Column(db.String(250), nullable=False)
+    videojuegos = db.relationship('Videojuego', backref='empresa', lazy=True)
 
     def __repr__(self):
         return '<Enterprise %r>' % self.nombre
@@ -34,5 +35,24 @@ class Empresa(db.Model):
             "id": self.id,
             "nombre": self.nombre,
             "slogan": self.slogan,
+            # do not serialize the password, its a security breach
+        }
+    
+class Videojuego(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(250), nullable=False)
+    genero = db.Column(db.String(250), nullable=False)
+    precio = db.Column(db.Integer, nullable=False)
+    empresa_id = db.Column(db.Integer, db.ForeignKey('empresa.id'),
+        nullable=False)
+
+    def __repr__(self):
+        return '<Videojuego %r>' % self.nombre
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "nombre": self.nombre,
+            "genero": self.genero,
             # do not serialize the password, its a security breach
         }
